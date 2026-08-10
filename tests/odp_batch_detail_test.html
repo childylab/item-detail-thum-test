@@ -73,7 +73,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
   <button id="startTestBtn" style="padding:14px 44px;background:#e94560;color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;">검증 시작</button>
 </div>
 <div id="sidebar">
-  <div class="logo">ODP 26FA <a href="index.html">← 메인</a></div>
+  <div class="logo">ODP 26FA <a href="../index.html">← 메인</a></div>
   <div class="tabs">
     <button class="active" data-tab="detail">상품상세</button>
     <button data-tab="thumb">썸네일</button>
@@ -156,13 +156,13 @@ const PRODUCTS = [
 ];
 
 const THUMB_SIZES = ['ERP','750','800','960','1000','1500','ERP_ALL'];
-let totalImgs=0, okImgs=0, failImgs=0, currentTab='detail';
+let totalImgs=0, okImgs=0, failImgs=0, currentTab='detail', generation=0;
 
 function updateStats(){ document.getElementById('cntTotal').textContent=totalImgs; document.getElementById('cntOk').textContent=okImgs; document.getElementById('cntFail').textContent=failImgs; }
 function addFail(url){ document.getElementById('failPanel').classList.add('show'); const d=document.createElement('div'); d.className='fail-item'; d.textContent=url; document.getElementById('failList').appendChild(d); }
-function resetStats(){ totalImgs=0;okImgs=0;failImgs=0; updateStats(); document.getElementById('failList').innerHTML=''; document.getElementById('failPanel').classList.remove('show'); }
+function resetStats(){ generation++; totalImgs=0;okImgs=0;failImgs=0; updateStats(); document.getElementById('failList').innerHTML=''; document.getElementById('failPanel').classList.remove('show'); }
 
-function createImg(src){ totalImgs++; const img=document.createElement('img'); img.src=src; img.alt=src.split('/').pop(); img.onload=function(){this.classList.add('loaded');okImgs++;updateStats();}; img.onerror=function(){this.classList.add('error');failImgs++;updateStats();addFail(src);}; return img; }
+function createImg(src){ const gen=generation; totalImgs++; const img=document.createElement('img'); img.src=src; img.alt=src.split('/').pop(); img.onload=function(){if(gen!==generation)return;this.classList.add('loaded');okImgs++;updateStats();}; img.onerror=function(){if(gen!==generation)return;this.classList.add('error');failImgs++;updateStats();addFail(src);}; return img; }
 
 function getDetailImages(pum,color){ const key=pum+'_'+color; const has=MODEL_C_SET.has(key); const imgs=[]; imgs.push(COMMON_IMGS[0],COMMON_IMGS[1],BASE+pum+'_txt.jpg'); if(has)imgs.push(BASE+key+'_model_c.jpg'); imgs.push(BASE+key+'_model.jpg',BASE+key+'_prd.jpg',BASE+key+'_detail.jpg',COMMON_IMGS[2],COMMON_IMGS[3],COMMON_IMGS[4],BASE+pum+'_size.jpg',BASE+pum+'_check.jpg',COMMON_IMGS[5],COMMON_IMGS[6]); return imgs; }
 function getThumbUrls(pum,color){ const key=pum+'_'+color; return {'ERP':THUMB_BASE+key+'.jpg','750':THUMB_BASE+key+'_750.jpg','800':THUMB_BASE+key+'_800.jpg','960':THUMB_BASE+key+'_960.jpg','1000':THUMB_BASE+key+'_1000.jpg','1500':THUMB_BASE+key+'_1500.jpg','ERP_ALL':THUMB_BASE+pum+'_ALL.jpg'}; }

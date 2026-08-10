@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UO 26FA 검증</title>
+<title>UNIV 26FA 검증</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
@@ -68,12 +68,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 </head>
 <body>
 <div id="dim-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
-  <div style="color:#fff;font-size:1.5rem;font-weight:700;">🧪 UO 26FA 검증</div>
+  <div style="color:#fff;font-size:1.5rem;font-weight:700;">🧪 UNIV 26FA 검증</div>
   <div style="color:#aaa;font-size:0.95rem;">검증 시작 버튼을 눌러 이미지 검증을 시작하세요</div>
   <button id="startTestBtn" style="padding:14px 44px;background:#e94560;color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;">검증 시작</button>
 </div>
 <div id="sidebar">
-  <div class="logo">UO 26FA <a href="index.html">← 메인</a></div>
+  <div class="logo">UNIV 26FA <a href="../index.html">← 메인</a></div>
   <div class="tabs">
     <button class="active" data-tab="detail">상품상세</button>
     <button data-tab="thumb">썸네일</button>
@@ -92,13 +92,40 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 </div>
 
 <script>
-const BASE = 'https://img.childy.kr/img/UNIVERSALOVERALL/UO26_FA/';
-const THUMB_BASE = 'https://img.childy.kr/img/UNIVERSALOVERALL/UO26_FA/thum/';
+const BASE = 'https://img.childy.kr/img/univ/univ26_FA/';
+const THUMB_BASE = 'https://img.childy.kr/img/univ/univ26_FA/thum/';
+const BRAND_BASE = 'https://img.childy.kr/img/univ/';
 
-const PRODUCTS = [
-  {pum:'UO263ISS01', color:'ALL', name:'유니버셜 오버롤 기획 반팔티셔츠', colors:['BLK','WHT','NVY','GRY','BRN'], mainColor:'BLK'}
+const COMMON_IMGS = [
+  BRAND_BASE + 'top_notice_univ.jpg',
+  BASE + 'intro_26fw.jpg',
+  BASE + 'modelspec.jpg',
+  BRAND_BASE + 'sizeguide.jpg',
+  BRAND_BASE + 'kc.jpg',
+  BRAND_BASE + 'washingtip.jpg',
+  BRAND_BASE + 'delivery.jpg'
 ];
 
+const PRODUCTS = [
+  ['UV263ILS01','MLG','유니 로고 긴팔티셔츠'],
+  ['UV263ILS01','IVY','유니 로고 긴팔티셔츠'],
+  ['UV263ILS01','NVY','유니 로고 긴팔티셔츠'],
+  ['UV263ILS02','OWH','크랙 백그래픽 긴팔티셔츠'],
+  ['UV263ILS02','BLK','크랙 백그래픽 긴팔티셔츠'],
+  ['UV263ILS02','CHC','크랙 백그래픽 긴팔티셔츠'],
+  ['UV263IZM03','OTM','헨리넥 아치 맨투맨'],
+  ['UV263IZM03','GRN','헨리넥 아치 맨투맨'],
+  ['UV263IMM04','MLG','래글런 그래픽 맨투맨'],
+  ['UV263IMM04','NVY','래글런 그래픽 맨투맨'],
+  ['UV263IHD05','IVY','클럽 그래픽 후드'],
+  ['UV263IHD05','KHA','클럽 그래픽 후드'],
+  ['UV263BPT01','MWH','베이직 로고 조거팬츠'],
+  ['UV263BPT01','NVY','베이직 로고 조거팬츠'],
+  ['UV263BPT02','MLG','베이직 로고 커브드팬츠'],
+  ['UV263BPT02','BLK','베이직 로고 커브드팬츠']
+];
+
+const THUMB_SIZES = ['ERP','750','800','1000','1500','ERP_ALL'];
 let totalImgs=0, okImgs=0, failImgs=0, currentTab='detail';
 
 function updateStats(){ document.getElementById('cntTotal').textContent=totalImgs; document.getElementById('cntOk').textContent=okImgs; document.getElementById('cntFail').textContent=failImgs; }
@@ -107,57 +134,53 @@ function resetStats(){ totalImgs=0;okImgs=0;failImgs=0; updateStats(); document.
 
 function createImg(src){ totalImgs++; const img=document.createElement('img'); img.src=src; img.alt=src.split('/').pop(); img.onload=function(){this.classList.add('loaded');okImgs++;updateStats();}; img.onerror=function(){this.classList.add('error');failImgs++;updateStats();addFail(src);}; return img; }
 
-function getDetailImages(product){
-  const p = product.pum;
-  const mainColor = product.mainColor;
-  const colors = product.colors;
-  const imgs = [];
-  imgs.push(BASE+p+'_ALL.jpg');
-  imgs.push(BASE+p+'_ALL_top.jpg');
-  imgs.push(BASE+p+'_ALL_txt.jpg');
-  imgs.push(BASE+p+'_ALL_event.jpg');
-  imgs.push(BASE+p+'_'+mainColor+'_top.jpg');
-  colors.forEach(c => imgs.push(BASE+p+'_'+c+'_model.jpg'));
-  imgs.push(BASE+p+'_'+mainColor+'_detail.jpg');
-  imgs.push(BASE+p+'_size.jpg');
-  imgs.push(BASE+p+'_washingtip.jpg');
-  return imgs;
+function getDetailImages(pum,color){
+  const key = pum+'_'+color;
+  return [
+    COMMON_IMGS[0],
+    COMMON_IMGS[1],
+    BASE+pum+'_txt.jpg',
+    BASE+pum+'_model.jpg',
+    BASE+key+'_model.jpg',
+    BASE+key+'_detail.jpg',
+    BASE+pum+'_info.jpg',
+    BASE+pum+'_size.jpg',
+    COMMON_IMGS[2],
+    COMMON_IMGS[3],
+    COMMON_IMGS[4],
+    COMMON_IMGS[5],
+    COMMON_IMGS[6]
+  ];
 }
 
-function getThumbUrls(product){
-  const p = product.pum;
-  const colors = product.colors;
-  const thumbs = {};
-  // ALL sizes
-  thumbs['ALL_960'] = THUMB_BASE+p+'_ALL_960.jpg';
-  thumbs['ALL_1000'] = THUMB_BASE+p+'_ALL_1000.jpg';
-  thumbs['ALL_1500'] = THUMB_BASE+p+'_ALL_1500.jpg';
-  // Each color sizes
-  colors.forEach(c => {
-    thumbs[c+'_960'] = THUMB_BASE+p+'_'+c+'_960.jpg';
-    thumbs[c+'_1000'] = THUMB_BASE+p+'_'+c+'_1000.jpg';
-    thumbs[c+'_1500'] = THUMB_BASE+p+'_'+c+'_1500.jpg';
-  });
-  return thumbs;
+function getThumbUrls(pum,color){
+  const key = pum+'_'+color;
+  return {
+    'ERP': THUMB_BASE+key+'.jpg',
+    '750': THUMB_BASE+key+'_750.jpg',
+    '800': THUMB_BASE+key+'_800.jpg',
+    '1000': THUMB_BASE+key+'_1000.jpg',
+    '1500': THUMB_BASE+key+'_1500.jpg',
+    'ERP_ALL': THUMB_BASE+pum+'_ALL.jpg'
+  };
 }
 
 function collapseAll(){ document.querySelectorAll('.card-body').forEach(b=>b.classList.add('hidden')); document.querySelectorAll('.card-header').forEach(h=>h.classList.add('collapsed')); }
 
 function buildNav(){
   const nav=document.getElementById('nav'); nav.innerHTML='';
-  PRODUCTS.forEach((product,i)=>{
-    const l=document.createElement('div');l.className='group-label';l.textContent=product.pum;nav.appendChild(l);
-    const a=document.createElement('a');a.href='#card-'+i;a.textContent=product.color+' ('+product.colors.join(',')+')';nav.appendChild(a);
-  });
+  const seen=new Set();
+  PRODUCTS.forEach((p,i)=>{ const[pum,color]=p; if(!seen.has(pum)){seen.add(pum); const l=document.createElement('div');l.className='group-label';l.textContent=pum;nav.appendChild(l);} const a=document.createElement('a');a.href='#card-'+i;a.textContent=color;nav.appendChild(a); });
 }
 
 function buildDetail(){
   const ct=document.getElementById('content'); ct.innerHTML=''; resetStats();
-  PRODUCTS.forEach((product,i)=>{
+  const seen=new Set();
+  PRODUCTS.forEach((p,i)=>{ const[pum,color,name]=p; const first=!seen.has(pum); if(first)seen.add(pum); const collapsed=!first;
     const card=document.createElement('div');card.className='card';card.id='card-'+i;
-    const h=document.createElement('div');h.className='card-header'; h.innerHTML=`<div><span class="pum">${product.pum}</span><span class="color">${product.color}</span><span class="name">${product.name}</span></div><span class="toggle">▼</span>`;
-    const b=document.createElement('div');b.className='card-body';
-    getDetailImages(product).forEach(s=>b.appendChild(createImg(s)));
+    const h=document.createElement('div');h.className='card-header'+(collapsed?' collapsed':''); h.innerHTML=`<div><span class="pum">${pum}</span><span class="color">${color}</span><span class="name">${name}</span></div><span class="toggle">▼</span>`;
+    const b=document.createElement('div');b.className='card-body'+(collapsed?' hidden':'');
+    getDetailImages(pum,color).forEach(s=>b.appendChild(createImg(s)));
     h.onclick=()=>{b.classList.toggle('hidden');h.classList.toggle('collapsed');};
     card.appendChild(h);card.appendChild(b);ct.appendChild(card);
   }); updateStats();
@@ -165,12 +188,13 @@ function buildDetail(){
 
 function buildThumb(){
   const ct=document.getElementById('content'); ct.innerHTML=''; resetStats();
-  PRODUCTS.forEach((product,i)=>{
+  const seen=new Set();
+  PRODUCTS.forEach((p,i)=>{ const[pum,color,name]=p; const first=!seen.has(pum); if(first)seen.add(pum); const collapsed=!first;
     const card=document.createElement('div');card.className='card';card.id='card-'+i;
-    const h=document.createElement('div');h.className='card-header'; h.innerHTML=`<div><span class="pum">${product.pum}</span><span class="color">${product.color}</span><span class="name">${product.name}</span></div><span class="toggle">▼</span>`;
-    const b=document.createElement('div');b.className='card-body';
-    const thumbs=getThumbUrls(product); const grid=document.createElement('div');grid.className='thumb-grid';
-    Object.keys(thumbs).forEach(sz=>{ const sl=document.createElement('div');sl.className='thumb-size-label';sl.textContent=sz;grid.appendChild(sl); const row=document.createElement('div');row.className='thumb-row'; const item=document.createElement('div');item.className='thumb-item'; item.appendChild(createImg(thumbs[sz])); const lb=document.createElement('div');lb.className='label';lb.textContent=thumbs[sz].split('/').pop();item.appendChild(lb); row.appendChild(item); grid.appendChild(row); });
+    const h=document.createElement('div');h.className='card-header'+(collapsed?' collapsed':''); h.innerHTML=`<div><span class="pum">${pum}</span><span class="color">${color}</span><span class="name">${name}</span></div><span class="toggle">▼</span>`;
+    const b=document.createElement('div');b.className='card-body'+(collapsed?' hidden':'');
+    const thumbs=getThumbUrls(pum,color); const grid=document.createElement('div');grid.className='thumb-grid';
+    THUMB_SIZES.forEach(sz=>{ const sl=document.createElement('div');sl.className='thumb-size-label';sl.textContent=sz;grid.appendChild(sl); const row=document.createElement('div');row.className='thumb-row'; const item=document.createElement('div');item.className='thumb-item'; item.appendChild(createImg(thumbs[sz])); const lb=document.createElement('div');lb.className='label';lb.textContent=thumbs[sz].split('/').pop();item.appendChild(lb); row.appendChild(item); grid.appendChild(row); });
     b.appendChild(grid);
     h.onclick=()=>{b.classList.toggle('hidden');h.classList.toggle('collapsed');};
     card.appendChild(h);card.appendChild(b);ct.appendChild(card);

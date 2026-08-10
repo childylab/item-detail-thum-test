@@ -3,31 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OH 26FA 검증</title>
+<title>UO 26FA 검증</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
-#sidebar { position: fixed; top: 0; left: 0; width: 200px; bottom: 0; background: #1a1a2e; overflow-y: auto; padding: 16px 0; z-index: 900; }
+
+#sidebar {
+  position: fixed; top: 0; left: 0; width: 200px; bottom: 0;
+  background: #1a1a2e; overflow-y: auto; padding: 16px 0; z-index: 900;
+}
 #sidebar .logo { padding: 0 14px 12px; font-size: 13px; color: #4fc3f7; font-weight: 700; }
 #sidebar .logo a { color: #888; text-decoration: none; font-size: 11px; font-weight: 400; }
 #sidebar .tabs { padding: 0 8px 12px; display: flex; gap: 4px; }
-#sidebar .tabs button { flex: 1; padding: 7px 0; border: none; border-radius: 4px; background: #2a2a4a; color: #8ab4f8; font-size: 11px; font-weight: 600; cursor: pointer; }
+#sidebar .tabs button {
+  flex: 1; padding: 7px 0; border: none; border-radius: 4px;
+  background: #2a2a4a; color: #8ab4f8; font-size: 11px; font-weight: 600; cursor: pointer;
+}
 #sidebar .tabs button.active { background: #4fc3f7; color: #000; }
+#sidebar .nav-group { padding: 8px 0; }
 #sidebar .group-label { color: #4fc3f7; font-weight: 700; font-size: 10px; padding: 6px 14px 2px; text-transform: uppercase; }
 #sidebar a { display: block; padding: 4px 14px; color: #aab; text-decoration: none; font-size: 11px; border-left: 3px solid transparent; }
 #sidebar a:hover { color: #fff; border-left-color: #4fc3f7; background: rgba(255,255,255,.03); }
+
 #main { margin-left: 200px; padding: 24px; display: flex; flex-direction: column; align-items: center; }
-.stats { width: 100%; position: sticky; top: 0; z-index: 100; background: #f5f5f5; display: flex; gap: 12px; padding: 12px 0; margin-bottom: 16px; font-size: 13px; font-weight: 600; align-items: center; }
+
+.stats {
+  position: sticky; top: 0; z-index: 100; background: #f5f5f5;
+  display: flex; gap: 12px; padding: 12px 0; margin-bottom: 16px; font-size: 13px; font-weight: 600; align-items: center;
+}
 .stats .s { padding: 6px 14px; border-radius: 6px; }
 .stats .s.total { background: #e3e3e3; }
 .stats .s.ok { background: #c8e6c9; color: #2e7d32; }
 .stats .s.fail { background: #ffcdd2; color: #c62828; }
 .stats .collapse-all { margin-left: auto; padding: 5px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; font-size: 11px; cursor: pointer; color: #555; }
 .stats .collapse-all:hover { background: #eee; }
+
 #failPanel { display: none; background: #fff3f3; border: 1px solid #e53935; border-radius: 6px; padding: 10px 14px; margin-bottom: 16px; max-height: 150px; overflow-y: auto; font-size: 11px; }
 #failPanel.show { display: block; }
 #failPanel h4 { color: #c62828; font-size: 12px; margin-bottom: 4px; }
 #failPanel .fail-item { color: #555; padding: 1px 0; word-break: break-all; }
+
 .card { width: 100%; background: #fff; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.06); overflow: hidden; max-width: 860px; margin-left: auto; margin-right: auto; }
 .card-header { padding: 10px 14px; background: #263238; color: #fff; cursor: pointer; display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
 .card-header:hover { background: #37474f; }
@@ -41,6 +56,7 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 .card-body img { display: block; width: 100%; max-width: 800px; margin: 0 auto; border: 2px solid #e0e0e0; }
 .card-body img.loaded { border-color: #e0e0e0; }
 .card-body img.error { border-color: #f44336; }
+
 .thumb-grid { padding: 8px; } .thumb-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; } .thumb-row .thumb-item { flex: 0 0 auto; width: 150px; }
 .thumb-item { text-align: center; }
 .thumb-item img { width: 100%; max-width: 160px; border: 2px solid #e0e0e0; border-radius: 4px; }
@@ -52,12 +68,12 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 </head>
 <body>
 <div id="dim-overlay" style="position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;">
-  <div style="color:#fff;font-size:1.5rem;font-weight:700;">🧪 OH 26FA 검증</div>
+  <div style="color:#fff;font-size:1.5rem;font-weight:700;">🧪 UO 26FA 검증</div>
   <div style="color:#aaa;font-size:0.95rem;">검증 시작 버튼을 눌러 이미지 검증을 시작하세요</div>
   <button id="startTestBtn" style="padding:14px 44px;background:#e94560;color:#fff;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;">검증 시작</button>
 </div>
 <div id="sidebar">
-  <div class="logo">OH 26FA <a href="index.html">← 메인</a></div>
+  <div class="logo">UO 26FA <a href="../index.html">← 메인</a></div>
   <div class="tabs">
     <button class="active" data-tab="detail">상품상세</button>
     <button data-tab="thumb">썸네일</button>
@@ -76,49 +92,72 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; b
 </div>
 
 <script>
-const BASE = 'https://img.childy.kr/img/ORDINARYHOLIDAY/ONDY26_FA/';
-const THUMB_BASE = 'https://img.childy.kr/img/ORDINARYHOLIDAY/ONDY26_FA/thum/';
-const NOTICE = 'https://img.childy.kr/img/ORDINARYHOLIDAY/top_notice_ODNY.jpg';
+const BASE = 'https://img.childy.kr/img/UNIVERSALOVERALL/UO26_FA/';
+const THUMB_BASE = 'https://img.childy.kr/img/UNIVERSALOVERALL/UO26_FA/thum/';
 
 const PRODUCTS = [
-  {pum:'OH265AAB05', color:'CHC', name:'ZEBRA SHOULDER BAG', thumbs:{960:['OH265AAB05_CHC_960_1.jpg','OH265AAB05_CHC_960_2.jpg'],1000:['OH265AAB05_CHC_1000_1.jpg','OH265AAB05_CHC_1000_2.jpg'],1500:['OH265AAB05_CHC_1500_1.jpg','OH265AAB05_CHC_1500_2.jpg']}},
-  {pum:'OH265AAB05', color:'IVY', name:'ZEBRA SHOULDER BAG', thumbs:{960:['OH265AAB05_IVY_960_1.jpg','OH265AAB05_IVY_960_2.jpg','OH265AAB05_IVY_960_3.jpg','OH265AAB05_IVY_960_4.jpg'],1000:['OH265AAB05_IVY_1000_1.jpg','OH265AAB05_IVY_1000_2.jpg','OH265AAB05_IVY_1000_3.jpg'],1500:['OH265AAB05_IVY_1500_1.jpg','OH265AAB05_IVY_1500_2.jpg','OH265AAB05_IVY_1500_3.jpg']}}
+  {pum:'UO263ISS01', color:'ALL', name:'유니버셜 오버롤 기획 반팔티셔츠', colors:['BLK','WHT','NVY','GRY','BRN'], mainColor:'BLK'}
 ];
 
-let totalImgs=0, okImgs=0, failImgs=0;
+let totalImgs=0, okImgs=0, failImgs=0, currentTab='detail';
 
 function updateStats(){ document.getElementById('cntTotal').textContent=totalImgs; document.getElementById('cntOk').textContent=okImgs; document.getElementById('cntFail').textContent=failImgs; }
 function addFail(url){ document.getElementById('failPanel').classList.add('show'); const d=document.createElement('div'); d.className='fail-item'; d.textContent=url; document.getElementById('failList').appendChild(d); }
 function resetStats(){ totalImgs=0;okImgs=0;failImgs=0; updateStats(); document.getElementById('failList').innerHTML=''; document.getElementById('failPanel').classList.remove('show'); }
-function createImg(src){ totalImgs++; const img=document.createElement('img'); img.src=src; img.alt=src.split('/').pop(); img.onload=function(){this.classList.add('loaded');okImgs++;updateStats();}; img.onerror=function(){this.classList.add('error');failImgs++;updateStats();addFail(src);}; return img; }
-function collapseAll(){ document.querySelectorAll('.card-body').forEach(b=>b.classList.add('hidden')); document.querySelectorAll('.card-header').forEach(h=>h.classList.add('collapsed')); }
 
-function getDetailImages(p) {
-  const key = p.pum + '_' + p.color;
-  return [
-    NOTICE,
-    BASE + key + '_intro.jpg',
-    BASE + key + '_01.jpg',
-    BASE + key + '_02.jpg',
-    BASE + key + '_top.jpg',
-    BASE + key + '_detail.jpg',
-    BASE + key + '_bottom_info.jpg'
-  ];
+function createImg(src){ totalImgs++; const img=document.createElement('img'); img.src=src; img.alt=src.split('/').pop(); img.onload=function(){this.classList.add('loaded');okImgs++;updateStats();}; img.onerror=function(){this.classList.add('error');failImgs++;updateStats();addFail(src);}; return img; }
+
+function getDetailImages(product){
+  const p = product.pum;
+  const mainColor = product.mainColor;
+  const colors = product.colors;
+  const imgs = [];
+  imgs.push(BASE+p+'_ALL.jpg');
+  imgs.push(BASE+p+'_ALL_top.jpg');
+  imgs.push(BASE+p+'_ALL_txt.jpg');
+  imgs.push(BASE+p+'_ALL_event.jpg');
+  imgs.push(BASE+p+'_'+mainColor+'_top.jpg');
+  colors.forEach(c => imgs.push(BASE+p+'_'+c+'_model.jpg'));
+  imgs.push(BASE+p+'_'+mainColor+'_detail.jpg');
+  imgs.push(BASE+p+'_size.jpg');
+  imgs.push(BASE+p+'_washingtip.jpg');
+  return imgs;
 }
+
+function getThumbUrls(product){
+  const p = product.pum;
+  const colors = product.colors;
+  const thumbs = {};
+  // ALL sizes
+  thumbs['ALL_960'] = THUMB_BASE+p+'_ALL_960.jpg';
+  thumbs['ALL_1000'] = THUMB_BASE+p+'_ALL_1000.jpg';
+  thumbs['ALL_1500'] = THUMB_BASE+p+'_ALL_1500.jpg';
+  // Each color sizes
+  colors.forEach(c => {
+    thumbs[c+'_960'] = THUMB_BASE+p+'_'+c+'_960.jpg';
+    thumbs[c+'_1000'] = THUMB_BASE+p+'_'+c+'_1000.jpg';
+    thumbs[c+'_1500'] = THUMB_BASE+p+'_'+c+'_1500.jpg';
+  });
+  return thumbs;
+}
+
+function collapseAll(){ document.querySelectorAll('.card-body').forEach(b=>b.classList.add('hidden')); document.querySelectorAll('.card-header').forEach(h=>h.classList.add('collapsed')); }
 
 function buildNav(){
   const nav=document.getElementById('nav'); nav.innerHTML='';
-  const seen=new Set();
-  PRODUCTS.forEach((p,i)=>{ if(!seen.has(p.pum)){seen.add(p.pum); const l=document.createElement('div');l.className='group-label';l.textContent=p.pum;nav.appendChild(l);} const a=document.createElement('a');a.href='#card-'+i;a.textContent=p.color;nav.appendChild(a); });
+  PRODUCTS.forEach((product,i)=>{
+    const l=document.createElement('div');l.className='group-label';l.textContent=product.pum;nav.appendChild(l);
+    const a=document.createElement('a');a.href='#card-'+i;a.textContent=product.color+' ('+product.colors.join(',')+')';nav.appendChild(a);
+  });
 }
 
 function buildDetail(){
   const ct=document.getElementById('content'); ct.innerHTML=''; resetStats();
-  PRODUCTS.forEach((p,i)=>{
+  PRODUCTS.forEach((product,i)=>{
     const card=document.createElement('div');card.className='card';card.id='card-'+i;
-    const h=document.createElement('div');h.className='card-header'; h.innerHTML=`<div><span class="pum">${p.pum}</span><span class="color">${p.color}</span><span class="name">${p.name}</span></div><span class="toggle">▼</span>`;
+    const h=document.createElement('div');h.className='card-header'; h.innerHTML=`<div><span class="pum">${product.pum}</span><span class="color">${product.color}</span><span class="name">${product.name}</span></div><span class="toggle">▼</span>`;
     const b=document.createElement('div');b.className='card-body';
-    getDetailImages(p).forEach(s=>b.appendChild(createImg(s)));
+    getDetailImages(product).forEach(s=>b.appendChild(createImg(s)));
     h.onclick=()=>{b.classList.toggle('hidden');h.classList.toggle('collapsed');};
     card.appendChild(h);card.appendChild(b);ct.appendChild(card);
   }); updateStats();
@@ -126,22 +165,12 @@ function buildDetail(){
 
 function buildThumb(){
   const ct=document.getElementById('content'); ct.innerHTML=''; resetStats();
-  PRODUCTS.forEach((p,i)=>{
+  PRODUCTS.forEach((product,i)=>{
     const card=document.createElement('div');card.className='card';card.id='card-'+i;
-    const h=document.createElement('div');h.className='card-header'; h.innerHTML=`<div><span class="pum">${p.pum}</span><span class="color">${p.color}</span><span class="name">${p.name}</span></div><span class="toggle">▼</span>`;
+    const h=document.createElement('div');h.className='card-header'; h.innerHTML=`<div><span class="pum">${product.pum}</span><span class="color">${product.color}</span><span class="name">${product.name}</span></div><span class="toggle">▼</span>`;
     const b=document.createElement('div');b.className='card-body';
-    const grid=document.createElement('div');grid.className='thumb-grid';
-    ['960','1000','1500'].forEach(size=>{
-      const sl=document.createElement('div');sl.className='thumb-size-label';sl.textContent=size;grid.appendChild(sl);
-      const row=document.createElement('div');row.className='thumb-row';
-      p.thumbs[size].forEach(fname=>{
-        const item=document.createElement('div');item.className='thumb-item';
-        item.appendChild(createImg(THUMB_BASE+fname));
-        const lb=document.createElement('div');lb.className='label';lb.textContent=fname;item.appendChild(lb);
-        row.appendChild(item);
-      });
-      grid.appendChild(row);
-    });
+    const thumbs=getThumbUrls(product); const grid=document.createElement('div');grid.className='thumb-grid';
+    Object.keys(thumbs).forEach(sz=>{ const sl=document.createElement('div');sl.className='thumb-size-label';sl.textContent=sz;grid.appendChild(sl); const row=document.createElement('div');row.className='thumb-row'; const item=document.createElement('div');item.className='thumb-item'; item.appendChild(createImg(thumbs[sz])); const lb=document.createElement('div');lb.className='label';lb.textContent=thumbs[sz].split('/').pop();item.appendChild(lb); row.appendChild(item); grid.appendChild(row); });
     b.appendChild(grid);
     h.onclick=()=>{b.classList.toggle('hidden');h.classList.toggle('collapsed');};
     card.appendChild(h);card.appendChild(b);ct.appendChild(card);
@@ -149,7 +178,7 @@ function buildThumb(){
 }
 
 document.querySelectorAll('#sidebar .tabs button').forEach(btn=>{
-  btn.onclick=()=>{ document.querySelectorAll('#sidebar .tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); if(btn.dataset.tab==='detail')buildDetail();else buildThumb(); };
+  btn.onclick=()=>{ document.querySelectorAll('#sidebar .tabs button').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); currentTab=btn.dataset.tab; if(currentTab==='detail')buildDetail();else buildThumb(); };
 });
 buildNav();
 document.getElementById('startTestBtn').addEventListener('click', function() {

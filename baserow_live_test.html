@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baserow 실시간 검증</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #333; }
+
+header {
+  background: #1a1a2e; color: #fff; padding: 20px 24px; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+header h1 { font-size: 1.2rem; margin-bottom: 12px; }
+header a { color: #888; text-decoration: none; font-size: 12px; margin-left: 12px; }
+
+.config-bar {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px;
+}
+.config-bar label { font-size: 12px; color: #aaa; }
+.config-bar input, .config-bar select {
+  padding: 8px 12px; border: none; border-radius: 4px; font-size: 13px; background: #2a2a4a; color: #fff;
+}
+.config-bar input { width: 320px; }
+.config-bar button {
+  padding: 8px 20px; background: #e94560; color: #fff; border: none; border-radius: 4px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.config-bar button:hover { background: #d63851; }
+.config-bar button.secondary { background: #4fc3f7; color: #000; }
+
+.stats {
+  display: flex; gap: 12px; font-size: 13px; font-weight: 600; align-items: center; flex-wrap: wrap;
+}
+.stats .s { padding: 5px 12px; border-radius: 5px; }
+.stats .s.total { background: rgba(255,255,255,0.1); color: #fff; }
+.stats .s.ok { background: rgba(76,175,80,0.2); color: #66bb6a; }
+.stats .s.fail { background: rgba(244,67,54,0.2); color: #ef5350; }
+.stats .s.loading { background: rgba(255,193,7,0.2); color: #ffc107; }
+
+main { max-width: 1000px; margin: 0 auto; padding: 24px; }
+
+#failPanel { display: none; background: #fff3f3; border: 1px solid #e53935; border-radius: 6px; padding: 12px 14px; margin-bottom: 16px; max-height: 200px; overflow-y: auto; font-size: 11px; }
+#failPanel.show { display: block; }
+#failPanel h4 { color: #c62828; font-size: 12px; margin-bottom: 6px; }
+#failPanel .fail-item { color: #555; padding: 2px 0; word-break: break-all; border-bottom: 1px solid #fce4ec; }
+#failPanel .fail-item .row-info { color: #999; font-size: 10px; }
+
+.card { background: #fff; border-radius: 8px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,.06); overflow: hidden; }
+.card-header {
+  padding: 10px 14px; background: #263238; color: #fff; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; font-size: 12px;
+}
+.card-header:hover { background: #37474f; }
+.card-header .pum { font-weight: 700; color: #80cbc4; }
+.card-header .color { color: #ffcc80; margin-left: 6px; }
+.card-header .name { color: #cfd8dc; margin-left: 6px; }
+.card-header .status { font-size: 11px; }
+.card-header .status.pass { color: #66bb6a; }
+.card-header .status.fail { color: #ef5350; }
+.card-header .toggle { font-size: 14px; transition: transform .2s; }
+.card-header.collapsed .toggle { transform: rotate(-90deg); }
+.card-body { padding: 10px; }
+.card-body.hidden { display: none; }
+
+.section-title { font-size: 11px; color: #666; font-weight: 700; margin: 12px 0 6px; padding-top: 8px; border-top: 1px solid #eee; }
+.section-title:first-child { border-top: none; margin-top: 0; }
+
+.thumb-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.thumb-item { text-align: center; }
+.thumb-item img { width: 120px; height: 120px; object-fit: cover; border: 2px solid #e0e0e0; border-radius: 4px; }
+.thumb-item img.loaded { border-color: #4caf50; }
+.thumb-item img.error { border-color: #f44336; }
+.thumb-item .label { font-size: 9px; color: #999; margin-top: 3px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.detail-imgs img { display: block; width: 100%; max-width: 750px; margin: 0 auto 2px; border: 2px solid #e0e0e0; }
+.detail-imgs img.loaded { border-color: #e0e0e0; }
+.detail-imgs img.error { border-color: #f44336; }
+
+.tab-bar { display: flex; gap: 4px; margin-bottom: 12px; }
+.tab-bar button { padding: 8px 16px; border: none; border-radius: 4px; background: #e0e0e0; font-size: 12px; cursor: pointer; font-weight: 600; }
+.tab-bar button.active { background: #4fc3f7; color: #000; }
+
+#loading { text-align: center; padding: 60px; color: #999; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+<header>
+  <h1>🔄 Baserow 실시간 검증 <a href="index.html">← 메인</a></h1>
+  <div class="config-bar">
+    <label>API Token:</label>
+    <input type="text" id="tokenInput" placeholder="Baserow API Token 입력" />
+    <select id="tableSelect">
+      <option value="2179">ODP 26FA (2179)</option>
+      <option value="2182">UNIV 26FA (2182)</option>
+      <option value="2186">테이블 (2186)</option>
+      <option value="2212">테이블 (2212)</option>
+    </select>
+    <button onclick="fetchAndTest()">검증 시작</button>
+    <button class="secondary" onclick="collapseAll()">모두 접기</button>
+  </div>
+  <div class="stats">
+    <span class="s total">행: <span id="cntRows">0</span></span>
+    <span class="s total">이미지: <span id="cntTotal">0</span></span>
+    <span class="s ok">✓ <span id="cntOk">0</span></span>
+    <span class="s fail">✗ <span id="cntFail">0</span></span>
+    <span class="s loading">⏳ <span id="cntPending">0</span></span>
+  </div>
+</header>
+
+<main>
+  <div id="failPanel"><h4>❌ 실패 URL</h4><div id="failList"></div></div>
+  <div class="tab-bar">
+    <button class="active" onclick="switchTab('thumb')">썸네일 검증</button>
+    <button onclick="switchTab('detail')">상품상세 검증</button>
+    <button onclick="switchTab('both')">전체</button>
+  </div>
+  <div id="loading">API Token을 입력하고 검증 시작을 눌러주세요.<br><br>
+    <span style="font-size:12px;color:#bbb;">Baserow 설정 → API 토큰 메뉴에서 발급 가능<br>
+    Base URL: https://baserow.childylab.com</span>
+  </div>
+  <div id="content"></div>
+</main>
+
+<script>
+const BASE_URL = 'https://baserow.childylab.com';
+let totalImgs = 0, okImgs = 0, failImgs = 0, pendingImgs = 0;
+let failedUrls = [];
+let currentTab = 'thumb';
+let allRows = [];
+
+function updateStats() {
+  document.getElementById('cntTotal').textContent = totalImgs;
+  document.getElementById('cntOk').textContent = okImgs;
+  document.getElementById('cntFail').textContent = failImgs;
+  document.getElementById('cntPending').textContent = pendingImgs;
+}
+
+function addFail(url, rowInfo) {
+  failedUrls.push({ url, rowInfo });
+  const panel = document.getElementById('failPanel');
+  panel.classList.add('show');
+  const d = document.createElement('div');
+  d.className = 'fail-item';
+  d.innerHTML = `<span class="row-info">[${rowInfo}]</span> ${url}`;
+  document.getElementById('failList').appendChild(d);
+}
+
+function resetStats() {
+  totalImgs = 0; okImgs = 0; failImgs = 0; pendingImgs = 0; failedUrls = [];
+  updateStats();
+  document.getElementById('failList').innerHTML = '';
+  document.getElementById('failPanel').classList.remove('show');
+}
+
+function createImg(src, rowInfo) {
+  totalImgs++; pendingImgs++;
+  const img = document.createElement('img');
+  img.src = src;
+  img.alt = src.split('/').pop();
+  img.onload = function() { this.classList.add('loaded'); okImgs++; pendingImgs--; updateStats(); updateCardStatus(this); };
+  img.onerror = function() { this.classList.add('error'); failImgs++; pendingImgs--; updateStats(); addFail(src, rowInfo); updateCardStatus(this); };
+  updateStats();
+  return img;
+}
+
+function updateCardStatus(img) {
+  const card = img.closest('.card');
+  if (!card) return;
+  const imgs = card.querySelectorAll('img');
+  const done = [...imgs].filter(i => i.classList.contains('loaded') || i.classList.contains('error'));
+  if (done.length === imgs.length) {
+    const failed = [...imgs].filter(i => i.classList.contains('error'));
+    const statusEl = card.querySelector('.status');
+    if (statusEl) {
+      if (failed.length === 0) { statusEl.textContent = '✓ PASS'; statusEl.className = 'status pass'; }
+      else { statusEl.textContent = `✗ ${failed.length}건 실패`; statusEl.className = 'status fail'; }
+    }
+  }
+}
+
+function collapseAll() {
+  document.querySelectorAll('.card-body').forEach(b => b.classList.add('hidden'));
+  document.querySelectorAll('.card-header').forEach(h => h.classList.add('collapsed'));
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  if (allRows.length > 0) renderRows(allRows);
+}
+
+function extractImgUrls(html) {
+  if (!html) return [];
+  const regex = /src="([^"]+)"/g;
+  const urls = [];
+  let m;
+  while ((m = regex.exec(html)) !== null) urls.push(m[1]);
+  return urls;
+}
+
+function getThumbFields(row) {
+  const fields = ['ERP', 'ERP_ALL', '720', '750', '800', '960', '1000', '1500'];
+  const thumbs = [];
+  fields.forEach(f => {
+    const val = row[f];
+    if (val && val.trim()) {
+      // 여러 줄일 수 있음 (1000 필드 등)
+      val.trim().split('\n').forEach(url => {
+        if (url.trim()) thumbs.push({ label: f, url: url.trim() });
+      });
+    }
+  });
+  return thumbs;
+}
+
+function renderRows(rows) {
+  const ct = document.getElementById('content');
+  ct.innerHTML = '';
+  resetStats();
+  document.getElementById('cntRows').textContent = rows.length;
+
+  rows.forEach((row, i) => {
+    const pum = row['품번'] || '';
+    const color = row['컬러코드'] || row['컬러'] || '';
+    const name = row['상품명'] || '';
+    const rowInfo = `${pum}_${color}`;
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const h = document.createElement('div');
+    h.className = 'card-header' + (i > 0 ? ' collapsed' : '');
+    h.innerHTML = `<div><span class="pum">${pum}</span><span class="color">${color}</span><span class="name">${name}</span></div><span class="status">검증중...</span><span class="toggle">▼</span>`;
+
+    const b = document.createElement('div');
+    b.className = 'card-body' + (i > 0 ? ' hidden' : '');
+
+    // 썸네일
+    if (currentTab === 'thumb' || currentTab === 'both') {
+      const thumbs = getThumbFields(row);
+      if (thumbs.length > 0) {
+        const title = document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = '📷 썸네일';
+        b.appendChild(title);
+        const thumbRow = document.createElement('div');
+        thumbRow.className = 'thumb-row';
+        thumbs.forEach(t => {
+          const item = document.createElement('div');
+          item.className = 'thumb-item';
+          item.appendChild(createImg(t.url, rowInfo));
+          const lb = document.createElement('div');
+          lb.className = 'label';
+          lb.textContent = t.label;
+          item.appendChild(lb);
+          thumbRow.appendChild(item);
+        });
+        b.appendChild(thumbRow);
+      }
+    }
+
+    // 상품상세
+    if (currentTab === 'detail' || currentTab === 'both') {
+      const detailHtml = row['상품상세코드'] || '';
+      const detailUrls = extractImgUrls(detailHtml);
+      if (detailUrls.length > 0) {
+        const title = document.createElement('div');
+        title.className = 'section-title';
+        title.textContent = '📄 상품상세 이미지';
+        b.appendChild(title);
+        const detailDiv = document.createElement('div');
+        detailDiv.className = 'detail-imgs';
+        detailUrls.forEach(url => detailDiv.appendChild(createImg(url, rowInfo)));
+        b.appendChild(detailDiv);
+      }
+    }
+
+    h.onclick = () => { b.classList.toggle('hidden'); h.classList.toggle('collapsed'); };
+    card.appendChild(h);
+    card.appendChild(b);
+    ct.appendChild(card);
+  });
+
+  updateStats();
+}
+
+async function fetchAndTest() {
+  const token = document.getElementById('tokenInput').value.trim();
+  if (!token) { alert('API Token을 입력해주세요.'); return; }
+
+  const tableId = document.getElementById('tableSelect').value;
+  const ct = document.getElementById('content');
+  const loading = document.getElementById('loading');
+  loading.style.display = 'block';
+  loading.textContent = '데이터 로딩 중...';
+  ct.innerHTML = '';
+  resetStats();
+  allRows = [];
+
+  try {
+    let page = 1;
+    let hasNext = true;
+    while (hasNext) {
+      const res = await fetch(`${BASE_URL}/api/database/rows/table/${tableId}/?user_field_names=true&size=100&page=${page}`, {
+        headers: { 'Authorization': `Token ${token}` }
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.detail || `HTTP ${res.status}`);
+      }
+      const data = await res.json();
+      allRows = allRows.concat(data.results);
+      hasNext = !!data.next;
+      page++;
+    }
+
+    loading.style.display = 'none';
+    document.getElementById('cntRows').textContent = allRows.length;
+    renderRows(allRows);
+  } catch (e) {
+    loading.style.display = 'block';
+    loading.innerHTML = `<span style="color:#e94560;">❌ 오류: ${e.message}</span><br><br><span style="font-size:12px;color:#999;">토큰이 올바른지, 해당 테이블에 접근 권한이 있는지 확인하세요.</span>`;
+  }
+}
+
+// 저장된 토큰 복원
+const savedToken = localStorage.getItem('baserow_token');
+if (savedToken) document.getElementById('tokenInput').value = savedToken;
+document.getElementById('tokenInput').addEventListener('change', function() {
+  localStorage.setItem('baserow_token', this.value);
+});
+</script>
+</body>
+</html>
