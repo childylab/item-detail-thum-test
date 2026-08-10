@@ -3,13 +3,39 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>상품 검증</title>
+<title>이미지 검증</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
 <style>
+:root {
+  --seed-font: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+  --seed-orange-50: #FFF5F0;
+  --seed-orange-100: #FFE8DB;
+  --seed-orange-200: #FFCDB2;
+  --seed-orange-300: #FFA97A;
+  --seed-orange-400: #FF8A4C;
+  --seed-orange-500: #FF6F0F;
+  --seed-orange-600: #E85D00;
+  --seed-gray-50: #F7F8FA;
+  --seed-gray-100: #F2F3F6;
+  --seed-gray-200: #EAEBEE;
+  --seed-gray-300: #DCDEE3;
+  --seed-gray-400: #D1D3D8;
+  --seed-gray-500: #ADB1BA;
+  --seed-gray-600: #868B94;
+  --seed-gray-700: #4D5159;
+  --seed-gray-800: #393A40;
+  --seed-gray-900: #212124;
+  --seed-bg: #FFFFFF;
+  --seed-radius: 16px;
+  --seed-radius-sm: 12px;
+  --seed-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 4px 20px rgba(0,0,0,0.06);
+}
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #0f0f23;
-  color: #fff;
+  font-family: var(--seed-font);
+  background: var(--seed-gray-50);
+  color: var(--seed-gray-900);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -17,39 +43,91 @@ body {
   justify-content: center;
   padding: 40px 20px;
 }
-h1 { font-size: 22px; margin-bottom: 32px; color: #ccc; font-weight: 500; }
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px;
-  max-width: 760px;
+.container {
   width: 100%;
+  max-width: 480px;
+  text-align: center;
+}
+.logo {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--seed-gray-900);
+  margin-bottom: 8px;
+}
+.desc {
+  font-size: 14px;
+  color: var(--seed-gray-600);
+  margin-bottom: 32px;
+  line-height: 1.5;
 }
 .card {
-  background: #1a1a2e;
-  border: 1px solid #4fc3f7;
-  border-radius: 10px;
+  display: block;
+  background: var(--seed-bg);
+  border: 1px solid var(--seed-gray-200);
+  border-radius: var(--seed-radius);
   padding: 24px 20px;
   text-decoration: none;
-  color: #fff;
-  transition: all .2s ease;
+  color: var(--seed-gray-900);
+  transition: all .15s ease;
+  box-shadow: var(--seed-shadow);
 }
 .card:hover {
-  border-color: #81d4fa;
+  border-color: var(--seed-orange-400);
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(79,195,247,.12);
+  box-shadow: 0 4px 16px rgba(255,111,15,0.1);
 }
-.card h2 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
-.card p { font-size: 12px; color: #888; }
+.card:active {
+  transform: translateY(0);
+}
+.card-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--seed-orange-50);
+  border-radius: var(--seed-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 14px;
+}
+.card h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.card p {
+  font-size: 13px;
+  color: var(--seed-gray-600);
+  line-height: 1.4;
+}
+.footer {
+  margin-top: 40px;
+  font-size: 12px;
+  color: var(--seed-gray-500);
+}
+.footer a {
+  color: var(--seed-orange-500);
+  text-decoration: none;
+}
 </style>
 </head>
 <body>
-<h1>상품상세 & 썸네일 이미지 검증</h1>
-<div class="grid">
+<div class="container">
+  <div class="logo">🧪</div>
+  <h1>이미지 검증 도구</h1>
+  <p class="desc">상품상세 & 썸네일 이미지가<br>정상적으로 올라갔는지 실시간으로 확인합니다</p>
   <a href="baserow_live_test.html" class="card">
-    <h2>🔄 Baserow 실시간 검증</h2>
-    <p>베이스로우 DB에서 실시간 데이터를 가져와 이미지 검증</p>
+    <div class="card-icon">🔄</div>
+    <h2>검증 시작하기</h2>
+    <p>베이스로우에서 데이터를 불러와 이미지를 검증합니다</p>
   </a>
+  <div class="footer">
+    <a href="https://github.com/childylab/item-detail-thum-test" target="_blank">GitHub</a>
+  </div>
 </div>
 </body>
 </html>
