@@ -1,6 +1,10 @@
 # 상품상세 & 썸네일 이미지 검증 도구
 
-쇼핑몰 상품 등록 전, 상품상세 이미지와 썸네일 이미지 URL이 정상적으로 올라갔는지 검증하는 도구입니다.
+쇼핑몰 상품 등록 전, 상품상세 이미지와 썸네일 이미지 URL이 정상적으로 올라갔는지 실시간으로 검증하는 도구입니다.
+
+## 배포 주소
+
+**https://msparkman.netlify.app/baserow_live_test**
 
 ## Git Clone
 
@@ -11,46 +15,20 @@ git clone https://github.com/childylab/item-detail-thum-test.git
 ## 프로젝트 구조
 
 ```
-├── index.html                  # 메인 페이지 (각 검증 페이지 링크)
-├── baserow_live_test.html      # Baserow 실시간 검증 (DB 연동)
-├── tests/                      # 브랜드별 하드코딩 검증 페이지
-│   ├── odp_batch_detail_test.html    # ODP 26FA (87건)
-│   ├── univ_batch_detail_test.html   # UNIV 26FA (16건)
-│   ├── uo_batch_detail_test.html     # UO 26FA (6건)
-│   ├── oh_batch_detail_test.html     # OH 26FA (2건)
-│   ├── product_tester.html           # 통합 검색 테스터
-│   └── UO 묶음상품/                   # UO 묶음상품 이미지 원본
+├── index.html                  # 메인 게이트 페이지
+├── baserow_live_test.html      # Baserow 실시간 검증 (핵심 도구)
 └── README.md
 ```
 
 ## 사용 방법
 
-### 1. 정적 서버로 열기
-
-별도 빌드 없이 HTML 파일을 브라우저에서 직접 열면 됩니다.
-
-```bash
-# 간단한 로컬 서버 (선택)
-npx serve .
-# 또는
-python3 -m http.server 8080
-```
-
-### 2. 하드코딩 검증 (tests/ 폴더)
-
-각 브랜드별 HTML을 열고 "검증 시작" 버튼을 누르면 미리 정의된 이미지 URL을 모두 로드하여 성공/실패를 표시합니다.
-
-- 상품상세 탭: 실제 쇼핑몰에 들어가는 상품상세 이미지 순서대로 검증
-- 썸네일 탭: 사이즈별 썸네일 이미지 검증
-
-### 3. Baserow 실시간 검증 (baserow_live_test.html)
-
-Baserow DB에서 실시간으로 데이터를 가져와 이미지를 검증합니다.
-
-1. `baserow_live_test.html` 열기
-2. API Token 입력 (한 번 입력하면 localStorage에 저장됨)
-3. 테이블 선택
+1. 배포 주소 또는 로컬에서 `baserow_live_test.html` 열기
+2. API Token 입력 (한 번 입력하면 브라우저에 저장됨)
+3. 테이블(브랜드) 선택
 4. "검증 시작" 클릭
+5. 썸네일/상품상세/전체 탭으로 전환하며 검증
+
+실패한 이미지는 빨간 테두리로 표시되고, 상단 실패 패널에 URL이 모아집니다.
 
 ---
 
@@ -58,21 +36,23 @@ Baserow DB에서 실시간으로 데이터를 가져와 이미지를 검증합�
 
 ### 접속 정보
 
-- URL: `https://baserow.childylab.com`
+- Baserow URL: `https://baserow.childylab.com`
 - API Token: Baserow 설정 → API 토큰에서 발급
 
-### 테이블 구성
+### 테이블 위치 (26FW)
 
-| 테이블 ID | 이름 | 브랜드 | 행 수 |
-|-----------|------|--------|-------|
-| 2179 | 26 FA | ODP (아웃도어프로덕츠) | 87 |
-| 2182 | 26 FA | UNIV (유니버셜오버롤) | 17 |
-| 2186 | 테이블 | UO (유니버셜오버롤 묶음) | 6 |
-| 2212 | 테이블 | OH (오디너리홀리데이) | 3 |
+| 브랜드 | 테이블 ID | Baserow 링크 |
+|--------|-----------|-------------|
+| 아웃도어프로덕츠 (ODP) | 2179 | https://baserow.childylab.com/database/991/table/2179/6040 |
+| 유니버셜오버롤 (UNIV) | 2182 | https://baserow.childylab.com/database/992/table/2182/6043 |
+| 유니버셜오버롤 (UO 묶음) | 2186 | https://baserow.childylab.com/database/993/table/2186/6047 |
+| 오디너리홀리데이 (OH) | 2212 | https://baserow.childylab.com/database/1024/table/2212/6073 |
 
-### 브랜드별 필드 구조
+---
 
-#### ODP (테이블 2179)
+## 브랜드별 필드 구조
+
+### 아웃도어프로덕츠 ODP (테이블 2179)
 
 | 필드명 | 설명 | 예시 |
 |--------|------|------|
@@ -89,14 +69,14 @@ Baserow DB에서 실시간으로 데이터를 가져와 이미지를 검증합�
 | 1000 | 1000px 썸네일 (멀티라인 가능) | thum/{품번}_{컬러}_1000.jpg |
 | 1500 | 1500px 썸네일 | thum/{품번}_{컬러}_1500.jpg |
 
-#### UNIV (테이블 2182)
+### 유니버셜오버롤 UNIV (테이블 2182)
 
 | 필드명 | 설명 | 예시 |
 |--------|------|------|
 | 품번 | 상품 품번 | UV263ILS01 |
 | 컬러코드 | 컬러 약어 | MLG, IVY, NVY |
 | 상품명 | 상품 이름 | 유니 로고 긴팔티셔츠 |
-| 상품상세코드 | HTML (img 태그 포함) | |
+| 상품상세코드 | HTML | |
 | ERP | ERP 썸네일 | thum/{품번}_{컬러}.jpg |
 | ERP_ALL | 대표 썸네일 | thum/{품번}_ALL.jpg |
 | 750 | 750px 썸네일 | |
@@ -104,31 +84,31 @@ Baserow DB에서 실시간으로 데이터를 가져와 이미지를 검증합�
 | 1000 | 1000px 썸네일 | |
 | 1500 | 1500px 썸네일 | |
 
-#### UO (테이블 2186)
+### 유니버셜오버롤 UO 묶음 (테이블 2186)
 
 | 필드명 | 설명 | 예시 |
 |--------|------|------|
 | 품번 | 상품 품번 | UO263ISS01 |
 | 컬러코드 | 컬러 약어 | ALL, BLK, WHT |
 | 상품명 | 상품 이름 | 유니버셜 오버롤 기획 반팔티셔츠 |
-| 상품상세코드 | HTML (img 태그 포함) | |
+| 상품상세코드 | HTML | |
 | 960 | 960px 썸네일 | |
 | 1000 | 1000px 썸네일 | |
 | 1500 | 1500px 썸네일 | |
 
-#### OH (테이블 2212)
+### 오디너리홀리데이 OH (테이블 2212)
 
 | 필드명 | 설명 | 예시 |
 |--------|------|------|
 | 품번 | 상품 품번 | OH265AAB05 |
 | 컬러 | 컬러 약어 | CHC, IVY |
 | 상품명 | 상품 이름 | ZEBRA SHOULDER BAG |
-| 상품상세코드 | HTML (img 태그 포함) | |
+| 상품상세코드 | HTML | |
 | 960 | 960px 썸네일 (멀티라인) | |
 | 1000 | 1000px 썸네일 (멀티라인) | |
 | 1500 | 1500px 썸네일 (멀티라인) | |
 
-> **참고:** OH, UO는 썸네일 필드에 여러 URL이 줄바꿈(`\n`)으로 구분되어 들어갈 수 있습니다.
+> **참고:** OH, UO는 썸네일 필드에 여러 URL이 줄바꿈(`\n`)으로 구분되어 들어갈 수 있습니다. 검증 도구가 자동으로 분리해서 각각 검증합니다.
 
 ---
 
@@ -216,17 +196,11 @@ Baserow DB에서 실시간으로 데이터를 가져와 이미지를 검증합�
 
 ## 새 브랜드/시즌 추가하기
 
-### 하드코딩 방식 (tests/ 폴더)
-
-1. 기존 브랜드 HTML 복사
-2. `PRODUCTS` 배열에 품번/컬러/상품명 추가
-3. `BASE`, `THUMB_BASE` URL 수정
-4. `index.html`에 카드 링크 추가
-
-### Baserow 방식 (권장)
-
 1. Baserow에 새 테이블 생성 (필드: 품번, 컬러코드, 상품명, 상품상세코드, 썸네일 사이즈별)
-2. `baserow_live_test.html`의 테이블 select에 옵션 추가
+2. `baserow_live_test.html`의 테이블 select에 옵션 추가:
+   ```html
+   <option value="새테이블ID">브랜드명 시즌 (테이블ID)</option>
+   ```
 3. 데이터 입력 후 바로 검증 가능
 
 ---
@@ -235,13 +209,9 @@ Baserow DB에서 실시간으로 데이터를 가져와 이미지를 검증합�
 
 모든 이미지는 `https://img.childy.kr/` 에서 호스팅됩니다.
 
-| 브랜드 | 경로 |
-|--------|------|
-| ODP | `/img/outdoor2026/odp26_FA/` |
-| ODP 썸네일 | `/img/outdoor2026/odp26_FA/thum/` |
-| UNIV | `/img/univ/univ26_FA/` |
-| UNIV 썸네일 | `/img/univ/univ26_FA/thum/` |
-| UO | `/img/UNIVERSALOVERALL/UO26_FA/` |
-| UO 썸네일 | `/img/UNIVERSALOVERALL/UO26_FA/thum/` |
-| OH | `/img/ORDINARYHOLIDAY/ONDY26_FA/` |
-| OH 썸네일 | `/img/ORDINARYHOLIDAY/ONDY26_FA/thum/` |
+| 브랜드 | 상품상세 경로 | 썸네일 경로 |
+|--------|-------------|------------|
+| ODP | `/img/outdoor2026/odp26_FA/` | `/img/outdoor2026/odp26_FA/thum/` |
+| UNIV | `/img/univ/univ26_FA/` | `/img/univ/univ26_FA/thum/` |
+| UO | `/img/UNIVERSALOVERALL/UO26_FA/` | `/img/UNIVERSALOVERALL/UO26_FA/thum/` |
+| OH | `/img/ORDINARYHOLIDAY/ONDY26_FA/` | `/img/ORDINARYHOLIDAY/ONDY26_FA/thum/` |
