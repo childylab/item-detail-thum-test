@@ -4,7 +4,7 @@
 
 ## 배포 주소
 
-**https://msparkman.netlify.app/baserow_live_test**
+**https://item-detail-thum-test.netlify.app/**
 
 ## Git Clone
 
