@@ -255,8 +255,6 @@ main {
       </select>
       <select id="batchFilter">
         <option value="all">전체</option>
-        <option value="batch1">1차</option>
-        <option value="batch2">2차</option>
       </select>
       <button class="btn btn-primary" onclick="fetchAndTest()">검증 시작</button>
       <button class="btn btn-secondary" onclick="collapseAll()">모두 접기</button>
@@ -292,22 +290,27 @@ let failedUrls = [];
 let currentTab = 'thumb';
 let allRows = [];
 
-// UO 26FW 배치 분류
-const BATCH_CONFIG = {
-  '2186': {
-    batch1: ['UO263ILS01','UO263OCD01','UO263ILS03','UO263ILS04','UO263BPT02','UO263BPT03','UO263BPT04','UO263AAC01'],
-    batch2: ['UO263OJK01','UO264OJK01','UO263OJK04','UO263IMM01','UO263IMM02','UO263BPT01','UO263BPT05']
-  }
-};
+function getBatchValues() {
+  const set = new Set();
+  allRows.forEach(row => {
+    const v = (row['차수'] || '').trim();
+    if (v) set.add(v);
+  });
+  return [...set].sort();
+}
+
+function populateBatchFilter() {
+  const sel = document.getElementById('batchFilter');
+  const batches = getBatchValues();
+  const prev = sel.value;
+  sel.innerHTML = '<option value="all">전체</option>' + batches.map(b => `<option value="${b}">${b}</option>`).join('');
+  sel.value = batches.includes(prev) ? prev : 'all';
+}
 
 function getFilteredRows() {
-  const tableId = document.getElementById('tableSelect').value;
   const batch = document.getElementById('batchFilter').value;
-  const config = BATCH_CONFIG[tableId];
-  if (!config || batch === 'all') return allRows;
-  const list = config[batch];
-  if (!list) return allRows;
-  return allRows.filter(row => list.includes(row['품번']));
+  if (batch === 'all') return allRows;
+  return allRows.filter(row => (row['차수'] || '').trim() === batch);
 }
 
 function updateStats() {
@@ -500,6 +503,7 @@ async function fetchAndTest() {
 
     loading.style.display = 'none';
     document.getElementById('cntRows').textContent = allRows.length;
+    populateBatchFilter();
     renderRows(getFilteredRows());
   } catch (e) {
     loading.style.display = 'block';
