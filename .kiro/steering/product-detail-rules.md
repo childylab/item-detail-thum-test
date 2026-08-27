@@ -27,8 +27,7 @@
 
 - GitHub: https://github.com/childylab/item-detail-thum-test
 - 브랜치: main
-- 검증기 파일: `baserow_live_test.html` (Baserow API 연동 이미지 검증)
-- 게이트 페이지: `index.html`
+- 검증기 파일: `index.html` (Baserow API 연동 이미지 검증, 게이트페이지 겸용)
 - GitHub Pages: 비활성 상태 (필요시 Settings → Pages에서 main 선택)
 
 ## Baserow 테이블
