@@ -253,6 +253,11 @@ main {
         <option value="2186">유니버셜오버롤 (UO) 26FW</option>
         <option value="2212">오디너리홀리데이 26FW</option>
       </select>
+      <select id="batchFilter">
+        <option value="all">전체</option>
+        <option value="batch1">1차</option>
+        <option value="batch2">2차</option>
+      </select>
       <button class="btn btn-primary" onclick="fetchAndTest()">검증 시작</button>
       <button class="btn btn-secondary" onclick="collapseAll()">모두 접기</button>
     </div>
@@ -286,6 +291,24 @@ let totalImgs = 0, okImgs = 0, failImgs = 0, pendingImgs = 0;
 let failedUrls = [];
 let currentTab = 'thumb';
 let allRows = [];
+
+// UO 26FW 배치 분류
+const BATCH_CONFIG = {
+  '2186': {
+    batch1: ['UO263ILS01','UO263OCD01','UO263ILS03','UO263ILS04','UO263BPT02','UO263BPT03','UO263BPT04','UO263AAC01'],
+    batch2: ['UO263OJK01','UO264OJK01','UO263OJK04','UO263IMM01','UO263IMM02','UO263BPT01','UO263BPT05']
+  }
+};
+
+function getFilteredRows() {
+  const tableId = document.getElementById('tableSelect').value;
+  const batch = document.getElementById('batchFilter').value;
+  const config = BATCH_CONFIG[tableId];
+  if (!config || batch === 'all') return allRows;
+  const list = config[batch];
+  if (!list) return allRows;
+  return allRows.filter(row => list.includes(row['품번']));
+}
 
 function updateStats() {
   document.getElementById('cntTotal').textContent = totalImgs;
@@ -346,7 +369,7 @@ function switchTab(tab) {
   currentTab = tab;
   document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
   event.target.classList.add('active');
-  if (allRows.length > 0) renderRows(allRows);
+  if (allRows.length > 0) renderRows(getFilteredRows());
 }
 
 function extractImgUrls(html) {
@@ -477,7 +500,7 @@ async function fetchAndTest() {
 
     loading.style.display = 'none';
     document.getElementById('cntRows').textContent = allRows.length;
-    renderRows(allRows);
+    renderRows(getFilteredRows());
   } catch (e) {
     loading.style.display = 'block';
     loading.innerHTML = `<span style="color:var(--seed-red-500);">오류: ${e.message}</span><div class="hint">토큰이 올바른지, 해당 테이블에 접근 권한이 있는지 확인하세요.</div>`;
@@ -489,6 +512,9 @@ const savedToken = localStorage.getItem('baserow_token');
 if (savedToken) document.getElementById('tokenInput').value = savedToken;
 document.getElementById('tokenInput').addEventListener('change', function() {
   localStorage.setItem('baserow_token', this.value);
+});
+document.getElementById('batchFilter').addEventListener('change', function() {
+  if (allRows.length > 0) renderRows(getFilteredRows());
 });
 </script>
 </body>
