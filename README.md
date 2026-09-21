@@ -52,8 +52,9 @@ git clone https://github.com/childylab/item-detail-thum-test.git
 | 브랜드 | 테이블 ID | Baserow 링크 |
 |--------|-----------|-------------|
 | 아웃도어프로덕츠 (ODP) | 2641 | https://baserow.childylab.com/database/991/table/2641/6502 |
+| 유니버셜오버롤 (UNIV) | 2674 | https://baserow.childylab.com/database/992/table/2674/6537 |
 
-검증기의 테이블 목록에서 `아웃도어프로덕츠 26WI`를 선택합니다. API 토큰에는 테이블 `2641`의 읽기 권한이 필요합니다.
+검증기의 테이블 목록에서 `아웃도어프로덕츠 26WI` 또는 `UNIV 26WI`를 선택합니다. API 토큰에는 선택한 테이블(`2641` 또는 `2674`)의 읽기 권한이 필요합니다.
 
 ---
 
