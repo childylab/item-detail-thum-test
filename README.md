@@ -15,14 +15,13 @@ git clone https://github.com/childylab/item-detail-thum-test.git
 ## 프로젝트 구조
 
 ```
-├── index.html                  # 메인 게이트 페이지
-├── baserow_live_test.html      # Baserow 실시간 검증 (핵심 도구)
+├── index.html                 # Baserow 실시간 이미지 검증
 └── README.md
 ```
 
 ## 사용 방법
 
-1. 배포 주소 또는 로컬에서 `baserow_live_test.html` 열기
+1. 배포 주소 또는 로컬에서 `index.html` 열기
 2. API Token 입력 (한 번 입력하면 브라우저에 저장됨)
 3. 테이블(브랜드) 선택
 4. "검증 시작" 클릭
@@ -47,6 +46,14 @@ git clone https://github.com/childylab/item-detail-thum-test.git
 | 유니버셜오버롤 (UNIV) | 2182 | https://baserow.childylab.com/database/992/table/2182/6043 |
 | 유니버셜오버롤 (UO 묶음) | 2186 | https://baserow.childylab.com/database/993/table/2186/6047 |
 | 오디너리홀리데이 (OH) | 2212 | https://baserow.childylab.com/database/1024/table/2212/6073 |
+
+### 테이블 위치 (26WI)
+
+| 브랜드 | 테이블 ID | Baserow 링크 |
+|--------|-----------|-------------|
+| 아웃도어프로덕츠 (ODP) | 2641 | https://baserow.childylab.com/database/991/table/2641/6502 |
+
+검증기의 테이블 목록에서 `아웃도어프로덕츠 26WI`를 선택합니다. API 토큰에는 테이블 `2641`의 읽기 권한이 필요합니다.
 
 ---
 
@@ -197,7 +204,7 @@ git clone https://github.com/childylab/item-detail-thum-test.git
 ## 새 브랜드/시즌 추가하기
 
 1. Baserow에 새 테이블 생성 (필드: 품번, 컬러코드, 상품명, 상품상세코드, 썸네일 사이즈별)
-2. `baserow_live_test.html`의 테이블 select에 옵션 추가:
+2. `index.html`의 테이블 select에 옵션 추가:
    ```html
    <option value="새테이블ID">브랜드명 시즌 (테이블ID)</option>
    ```
